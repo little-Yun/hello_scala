@@ -1,4 +1,4 @@
-package com.xy
+package com.spark
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
@@ -7,7 +7,7 @@ import org.apache.spark.SparkContext
  * @create: 2022-11-29 16:33
  * @description:
  **/
-object Start {
+object SparkDemo {
   def main(args: Array[String]): Unit = {
     val sparkConf = new SparkConf().setMaster("local").setAppName("WordCount")
     val sc = new SparkContext(sparkConf)
