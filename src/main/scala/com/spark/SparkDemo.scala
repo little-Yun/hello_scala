@@ -1,44 +1,24 @@
 package com.spark
 
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
+import org.apache.spark.{SparkConf, SparkContext}
+
 
 /**
- * @create: 2022-11-29 16:33
+ * @create: 2022-12-01 14:37
  * @description:
  **/
 object SparkDemo {
   def main(args: Array[String]): Unit = {
-    val sparkConf = new SparkConf().setMaster("local").setAppName("WordCount")
-    val sc = new SparkContext(sparkConf)
-    //    test_1(sc)
-    test_2(sc)
-    // 关闭连接
-    sc.stop();
-  }
+    val file = "datas/1.txt"
+    // 设置程序名称
+    val config = new SparkConf().setMaster("local").setAppName("sampleApp")
+    // 封装成content对象
+    val sc = new SparkContext(config)
+    // 加载文件为RDD，并且进行缓存
+    val data = sc.textFile(file).cache()
 
-  def test_1(sc: SparkContext) = {
-    val lines = sc.textFile("datas")
-    // 对数据进行分词
-    // 扁平化:将整体拆分成个体的操作
-    val words = lines.flatMap(_.split(" "))
-    // 将数据根据单词进行分组，便于统计
-    // （hello,hello,hello）
-    val wordGroup = words.groupBy(word => word)
-    // 转换数据结构 word => (word, 1)
-    val wordCount = wordGroup.map {
-      case (word, list) => {
-        (word, list.size)
-      }
-    }
-    // 展示数据
-    wordCount.foreach(println)
-  }
-
-  def test_2(sc: SparkContext) = {
-    val lines = sc.textFile("datas")
-    // 对数据进行分词
-    // 扁平化:将整体拆分成个体的操作
-    lines.flatMap(_.split(" ")).map((_, 1)).reduceByKey(_ + _).foreach(println)
+    val acount = data.filter(element => element.contains("a")).count()
+    val bcount = data.filter(element => element.contains("b")).count()
+    println("result is a: %s, b:%s".format(acount, bcount))
   }
 }
